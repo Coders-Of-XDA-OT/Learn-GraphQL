@@ -2,8 +2,6 @@
 
 ## 4. Scalar datatypes
 
-> Installing packages
-
 ```js
 // 5 - Scalar type of graphql (data-type that holds single value)
 /*
