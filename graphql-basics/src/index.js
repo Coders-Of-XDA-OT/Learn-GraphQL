@@ -6,6 +6,8 @@ const typeDefs = `
   type Query {
     me: User!
     post: Post!
+    greeting(name: String): String!
+    add(a: Float!, b: Float!): Float!
   }
   type User {
     id: ID!
@@ -39,6 +41,12 @@ const resolvers = {
         body: 'A Counterintuitive approach to living a good life',
         published: true
       }
+    },
+    greeting(parent, { name }, ctx, info) {
+      return !name ? 'Hello' : `Hello ${name}`
+    },
+    add (parent, {a, b}, ctx, info) {
+      return a + b
     }
   },
 };
