@@ -1,6 +1,6 @@
 # graphql-basics
 
-## 3. Setting up graphql server and helloWorld
+## 3. Setting up graphql server with helloWorld
 
 > Installing packages
 
@@ -114,3 +114,9 @@ server.start(() => {
 |___ package.json
 
 ```
+
+> Challenge
+
+- Create new type defination for name
+- Add function for name that returns normal string
+- Test your work
