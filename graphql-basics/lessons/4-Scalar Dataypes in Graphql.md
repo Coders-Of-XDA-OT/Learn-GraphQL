@@ -141,3 +141,19 @@ server.start(() => {
 |___ package.json
 
 ```
+
+> Challenge
+
+- Create query definitation and resolvers for each
+
+```js
+{
+  title         - return string (product name)
+  price         - return number as float
+  releaseYear   - return number as int (optional)
+  rating        - return number as float (optional)
+  inStock       - return boolean
+}
+```
+
+- Test your work

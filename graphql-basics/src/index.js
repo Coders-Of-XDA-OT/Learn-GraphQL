@@ -13,38 +13,23 @@ import { GraphQLServer } from "graphql-yoga";
 
 // Type Definitions (Schema)
 const typeDefs = `
-    type Query {
-        helloWorld: String!
-        id: ID!
-        name: String!
-        age: Int!
-        employed: Boolean!
-        gpa: Float
-    }
+  type Query {
+    title: String!
+    price: Float!
+    releaseYear: Int
+    rating: Float
+    inStock: Boolean!
+  }
 `;
 
 // Resolvers (Set of functions)
 const resolvers = {
   Query: {
-    helloWorld() {
-      return "Hello World";
-    },
-    id () {
-      return 'b31bbq3'
-    },
-    name () {
-      return 'Dhruv Saxena'
-    },
-    age () {
-      return 22
-    },
-    employed () {
-      return true
-    },
-    gpa () {
-      // returns float or null
-      return 3.6
-    }
+    title () { return 'Back to the future' },
+    price () { return 7.99 },
+    releaseYear () { return 1985 },
+    rating () { return 8.5 },
+    inStock () { return true }
   },
 };
 
