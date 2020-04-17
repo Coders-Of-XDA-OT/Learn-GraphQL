@@ -1,6 +1,6 @@
 # graphql-basics
 
-## 1.  ES6 Import/Export Statements
+## 2.  ES6 Import/Export Statements
 
 > Export Statement
 
