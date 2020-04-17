@@ -4,15 +4,16 @@ import { GraphQLServer } from "graphql-yoga";
 // Type Definitions (Schema)
 const typeDefs = `
   type Query {
-    grades: [Int!]!
+    add(numbers: [Float!]!): Float!
   }
 `;
 
 // Resolvers (Set of functions)
 const resolvers = {
   Query: {
-    grades (parent, args, ctx, into) {
-      return [99, 70, 80, 93, 91]
+    add (parent, { numbers }, ctx, into) {
+      if (numbers.length <= 0) return 0
+      return numbers.reduce((total, current) => total += current)
     }
   },
 };
