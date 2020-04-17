@@ -17,7 +17,7 @@
 {
   "scripts": {
     "start": "babel-node src/index.js",
-    "dev": "nodemon --exec npm start"
+    "dev": "nodemon src/index.js --exec babel-node"
   }
 }
 ```
