@@ -99,3 +99,21 @@ server.start(() => {
 |___ package.json
 
 ```
+
+> Challenge
+
+- Create a custom type "Post"
+- All fields should be non-nullable
+- Create a resolver to return the values
+
+```js
+// custom datatype "Post" fields:
+{
+  id            - return ID
+  title         - return String
+  body          - return String
+  published     - return Boolean
+}
+```
+
+- Test your work

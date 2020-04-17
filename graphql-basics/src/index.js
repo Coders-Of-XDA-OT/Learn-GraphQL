@@ -3,18 +3,23 @@ import { GraphQLServer } from "graphql-yoga";
 
 // Type Definitions (Schema)
 const typeDefs = `
-"# root query"
   type Query {
     me: User!
+    post: Post!
   }
-  
-"# creating new custom type User"
   type User {
     id: ID!
     name: String!
     email: String!
     age: Int
   }
+  type Post {
+    id: ID!
+    title: String!
+    body: String!
+    published: Boolean!
+  }
+
 `;
 
 // Resolvers (Set of functions)
@@ -25,6 +30,14 @@ const resolvers = {
         id: 's0m3R4nD0mID',
         name: 'Dhruv Saxena',
         email: 'saxenadhruv1927@gmail.com'
+      }
+    },
+    post () {
+      return {
+        id: '4n07H3rR4nD0mID',
+        title: 'The Subtle Art of Not Giving a F*ck',
+        body: 'A Counterintuitive approach to living a good life',
+        published: true
       }
     }
   },
