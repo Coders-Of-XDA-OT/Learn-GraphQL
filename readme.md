@@ -1,4 +1,4 @@
-# GRAPHQL - LEARNING
+# Learn-GraphQL
 
 > graphql-basics
     - setting up babel
