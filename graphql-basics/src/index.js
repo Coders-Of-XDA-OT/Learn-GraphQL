@@ -1,4 +1,3 @@
-// Import graphql-yoga module
 import { GraphQLServer } from "graphql-yoga";
 
 // demo data 
@@ -30,8 +29,8 @@ const posts = [{
   published: true
 }, {
   id: '3',
-  title: 'HP 3',
-  body: 'Harry Potter 3',
+  title: 'Dark Lords',
+  body: 'Dark Loards',
   published: false
 },]
 
@@ -39,7 +38,7 @@ const posts = [{
 const typeDefs = `
   type Query {
     users(query: String): [User!]!
-    posts(query: Boolean): [Post!]!
+    posts(query: String): [Post!]!
   }
   type User {
     id: ID!
@@ -64,9 +63,14 @@ const resolvers = {
       return users.filter(u => u.name.toLowerCase().includes(args.query.toLowerCase()))
     },
     posts (parent, args, ctx, info) {
-      if (args.query !== undefined)
-        return posts.filter(p => p.published === args.query)
-      else return posts
+      if (!args.query) return posts
+      
+      return posts.filter(post => {
+      const isTitleMatch = post.title.toLowerCase().includes(args.query.toLowerCase())
+      const isBodyMatch = post.body.toLowerCase().includes(args.query.toLowerCase())
+
+      return isTitleMatch || isBodyMatch 
+      })
     }
   },
 };
