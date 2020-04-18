@@ -1,6 +1,6 @@
 import { GraphQLServer } from "graphql-yoga";
 
-// demo data 
+// demo data
 const users = [{
   id: '1',
   name: 'Dhruv Saxena',
@@ -22,7 +22,6 @@ const users = [{
   posts: [],
   comments: ['1102']
 }]
-
 const posts = [{
   id: '1',
   title: 'HP 1',
@@ -45,7 +44,6 @@ const posts = [{
   author: '2',
   comments: ['104']
 },]
-
 const comments = [{
   id: '101',
   text: 'Hey nice tutorials',
@@ -111,7 +109,7 @@ const resolvers = {
       return posts.filter(post => {
         const isTitleMatch = post.title.toLowerCase().includes(args.query.toLowerCase())
         const isBodyMatch = post.body.toLowerCase().includes(args.query.toLowerCase())
-        return isTitleMatch || isBodyMatch 
+        return isTitleMatch || isBodyMatch
       })
     },
     comments (parent, args, ctx, info) {
