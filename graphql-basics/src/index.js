@@ -1,56 +1,47 @@
 import { GraphQLServer } from "graphql-yoga";
 import { v4 as uuidv4 } from "uuid"
 // demo data
-const users = [{
+let users = [{
   id: '1',
   name: 'Dhruv Saxena',
   email: 'dhruv@example.com',
-  age: 22,
-  posts: ['1', '2'],
-  comments: ['101', '104']
+  age: 22
 }, {
   id: '2',
   name: 'Someone',
-  email: 'someone@example.com',
-  posts: ['3'],
-  comments: ['103']
+  email: 'someone@example.com'
 }, {
   id: '3',
   name: 'Mike',
   email: 'mike@example.com',
-  age: 32,
-  posts: [],
-  comments: ['1102']
+  age: 32
 }]
-const posts = [{
+let posts = [{
   id: '1',
   title: 'HP 1',
   body: 'Harry Potter 1',
   published: true,
-  author: '1',
-  comments: ['101', '1102']
+  author: '1'
 }, {
   id: '2',
   title: 'HP 2',
   body: 'Harry Potter 2',
   published: true,
-  author: '1',
-  comments: ['103']
+  author: '1'
 }, {
   id: '3',
   title: 'Dark Lords',
   body: 'Dark Loards',
   published: false,
-  author: '2',
-  comments: ['104']
+  author: '2'
 },]
-const comments = [{
+let comments = [{
   id: '101',
   text: 'Hey nice tutorials',
   author: '1',
   post: '1'
 }, {
-  id: '1102',
+  id: '102',
   text: 'Good Job',
   author: '3',
   post: '1'
@@ -62,7 +53,7 @@ const comments = [{
 }, {
   id: '104',
   text: 'learning graphql is awesome',
-  author: '1',
+  author: '2',
   post: '3'
 }]
 
@@ -76,8 +67,11 @@ const typeDefs = `
 
   type Mutation {
     createUser(data: CreateUserInput!): User!
+    deleteUser(id: ID!): User!
     createPost(data: CreatePostInput!): Post!
+    deletePost(id: ID!): Post!
     createComment(data: createCommentInput!): Comment!
+    deleteComment(id: ID!): Comment!
   }
 
   input CreateUserInput {
@@ -175,6 +169,36 @@ const resolvers = {
       }
       comments.push(comment)
       return comment
+    },
+    deleteUser (parent, args, ctx, info) {
+      const userIndex = users.findIndex(user => user.id === args.id)
+      if (userIndex === -1) throw new Error('error.user.not-found')
+
+      const deletedUser = users.splice(userIndex, 1)
+      posts = posts.filter(post => {
+        const match = post.author === args.id
+        if (match) {
+          comments = comments.filter(comment => comment.post !== post.id)
+        }
+        return !match
+      })
+
+      comments = comments.filter(comment => comment.author !== args.id)
+      return deletedUser[0]
+    },
+    deletePost (parent, args, ctx, info) {
+      const postIndex = posts.findIndex(post => post.id === args.id)
+      if (postIndex === -1) throw new Error('error.post.not-found')
+      const deletedPost = posts.splice(postIndex, 1)
+      comments = comments.filter(comment => comment.post !== args.id)
+      return deletedPost[0]
+    },
+    deleteComment (parent, args, ctx, info) {
+      const commentIndex = comments.findIndex(comment => comment.id === args.id)
+      if (commentIndex === -1) throw new Error('error.comment.not-found')
+
+      const deletedComment = comments.splice(commentIndex, 1)
+      return deletedComment[0]
     }
   },
   User: {
