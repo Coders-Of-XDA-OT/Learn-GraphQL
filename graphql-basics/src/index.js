@@ -128,11 +128,10 @@ const resolvers = {
     createUser (parent, args, ctx, info) {
       const emailTaken = users.some(u => u.email === args.email)
       if (emailTaken) throw new Error('error.email.taken')
+
       const user = {
         id: uuidv4(),
-        name: args.name,
-        email: args.email,
-        age: args.age
+        ...args
       }
       users.unshift(user)
       return user
@@ -140,12 +139,10 @@ const resolvers = {
     createPost (parent, args, ctx, info) {
       const authorExists = users.some(user => user.id === args.author)
       if (!authorExists) throw new Error('error.author.invalid')
+
       const post = {
         id: uuidv4(),
-        title: args.title,
-        body: args.body,
-        published: args.published,
-        author: args.author
+        ...args
       }
       posts.unshift(post)
       return post
@@ -153,13 +150,11 @@ const resolvers = {
     createComment (parent, args, ctx, info) {
       const authorExists = users.some(user => user.id === args.author)
       const postExists = posts.some(post => post.id === args.post && post.published)
-      
       if (!authorExists || !postExists) throw new Error('error.author-or-post.invalid')
+
       const comment = {
         id: uuidv4(),
-        text: args.text,
-        author: args.author,
-        post: args.post
+        ...args
       }
       comments.push(comment)
       return comment
