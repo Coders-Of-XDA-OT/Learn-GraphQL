@@ -75,9 +75,26 @@ const typeDefs = `
   }
 
   type Mutation {
-    createUser(name: String!, email: String!, age: Int): User!
-    createPost(title: String!, body: String!, published: Boolean!, author: ID!): Post!
-    createComment(text: String!, author: ID!, post: ID!): Comment!
+    createUser(data: CreateUserInput!): User!
+    createPost(data: CreatePostInput!): Post!
+    createComment(data: createCommentInput!): Comment!
+  }
+
+  input CreateUserInput {
+    name: String!
+    email: String!
+    age: Int
+  }
+  input CreatePostInput {
+    title: String!
+    body: String!
+    published: Boolean!
+    author: ID!
+  }
+  input createCommentInput {
+    text: String!
+    author: ID!
+    post: ID!
   }
 
   type User {
@@ -126,35 +143,35 @@ const resolvers = {
   },
   Mutation: {
     createUser (parent, args, ctx, info) {
-      const emailTaken = users.some(u => u.email === args.email)
+      const emailTaken = users.some(u => u.email === args.data.email)
       if (emailTaken) throw new Error('error.email.taken')
 
       const user = {
         id: uuidv4(),
-        ...args
+        ...args.data
       }
       users.unshift(user)
       return user
     },
     createPost (parent, args, ctx, info) {
-      const authorExists = users.some(user => user.id === args.author)
+      const authorExists = users.some(user => user.id === args.data.author)
       if (!authorExists) throw new Error('error.author.invalid')
 
       const post = {
         id: uuidv4(),
-        ...args
+        ...args.data
       }
       posts.unshift(post)
       return post
     },
     createComment (parent, args, ctx, info) {
-      const authorExists = users.some(user => user.id === args.author)
-      const postExists = posts.some(post => post.id === args.post && post.published)
+      const authorExists = users.some(user => user.id === args.data.author)
+      const postExists = posts.some(post => post.id === args.data.post && post.published)
       if (!authorExists || !postExists) throw new Error('error.author-or-post.invalid')
 
       const comment = {
         id: uuidv4(),
-        ...args
+        ...args.data
       }
       comments.push(comment)
       return comment
