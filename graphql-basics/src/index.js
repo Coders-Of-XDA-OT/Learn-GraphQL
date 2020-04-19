@@ -26,3 +26,28 @@ const server = new GraphQLServer({
 server.start(() => {
   console.log("Server is up");
 });
+
+// > Project Structure
+
+// ```js
+// + graphql-basics
+// |
+// |___ + node_modules
+// |___ + src
+// |    |___ + resolvers
+// |    |      |
+// |    |      |___ Mutation.js
+// |    |      |___ Query.js
+// |    |      |___ Comment.js
+// |    |      |___ Post.js
+// |    |      |___ User.js
+// |    |
+// |    |___ index.js
+// |    |___ db.js
+// |    |___ schema.graphql
+// |
+// |___ .babelrc
+// |___ package.lock.json
+// |___ package.json
+
+// ```
