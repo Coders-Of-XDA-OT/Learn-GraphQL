@@ -37,6 +37,40 @@ const Mutation = {
     db.comments.push(comment);
     return comment;
   },
+  updateUser(parent, args, { db }, info) {
+    const user = db.users.find(user => user.id === args.id)
+    if(!user) throw new Error('error.user.not-found')
+
+    if(typeof args.data.email === 'string') {
+      const emailTaken = db.users.some(user => user.email === args.data.email)
+
+      if(emailTaken) throw new Error('error.email.taken')
+      user.email = args.data.email
+    }
+    
+    if(typeof args.data.name === 'string') user.name = args.data.name
+    if(typeof args.data.age !== 'undefined') user.age = args.data.age
+
+    return user
+  },
+  updatePost(parent, args, { db }, info) {
+    const post = db.posts.find(post => post.id === args.id)
+    if(!post) throw new Error('error.post.not-found')
+
+    if(typeof args.data.title === 'string') post.title = args.data.title
+    if(typeof args.data.body === 'string') post.body = args.data.body
+    if(typeof args.data.published === 'boolean') post.published = args.data.published
+    
+    return post
+  },
+  updateComment(parent, args, { db}, info) {
+    const comment = db.comments.find(comment => comment.id === args.id)
+    if(!comment) throw new Error('error.comment.not-found')
+
+    if(typeof args.data.text === 'string') comment.text = args.data.text
+
+    return comment
+  },
   deleteUser(parent, args, { db }, info) {
     const userIndex = db.users.findIndex((user) => user.id === args.id);
     if (userIndex === -1) throw new Error("error.user.not-found");
