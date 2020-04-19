@@ -76,6 +76,7 @@ const typeDefs = `
 
   type Mutation {
     createUser(name: String!, email: String!, age: Int): User!
+    createPost(title: String!, body: String!, published: Boolean!, author: ID!): Post!
   }
 
   type User {
@@ -126,16 +127,27 @@ const resolvers = {
     createUser (parent, args, ctx, info) {
       const emailTaken = users.some(u => u.email === args.email)
       if (emailTaken) throw new Error('error.email.taken')
-
       const user = {
         id: uuidv4(),
         name: args.name,
         email: args.email,
         age: args.age
       }
-
-      users.push(user)
+      users.unshift(user)
       return user
+    },
+    createPost (parent, args, ctx, info) {
+      const authorExists = users.some(user => user.id === args.author)
+      if (!authorExists) throw new Error('error.author.invalid')
+      const post = {
+        id: uuidv4(),
+        title: args.title,
+        body: args.body,
+        published: args.published,
+        author: args.author
+      }
+      posts.unshift(post)
+      return post
     }
   },
   User: {
