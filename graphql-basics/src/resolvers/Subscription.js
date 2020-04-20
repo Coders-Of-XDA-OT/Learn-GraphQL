@@ -1,15 +1,11 @@
 const Subscription = {
-  count: {
-    subscribe(parent, args, { pubsub }, info) {
-      let count = 0;
+  comment: {
+    subscribe(parent, { postId }, ctx, info) {
+      const { db, pubsub } = ctx;
+      const postExists = db.posts.find(post => post.id === postId && post.published)
+      if (!postExists) throw new Error('error.post.invalid')
 
-      setInterval(() => {
-        count++;
-        pubsub.publish("count", {
-          count,
-        });
-      }, 1000);
-      return pubsub.asyncIterator("count");
+      return pubsub.asyncIterator(`comments-${postId}`)
     },
   },
 };
