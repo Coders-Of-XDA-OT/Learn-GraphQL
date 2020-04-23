@@ -11,7 +11,7 @@ const Mutation = {
     db.users.unshift(user);
     return user;
   },
-  createPost(parent, args, { db }, info) {
+  createPost(parent, args, { db, pubsub }, info) {
     const authorExists = db.users.some((user) => user.id === args.data.author);
     if (!authorExists) throw new Error("error.author.invalid");
 
@@ -20,6 +20,9 @@ const Mutation = {
       ...args.data,
     };
     db.posts.unshift(post);
+    if (args.data.published) {
+      pubsub.publish('post', { post })
+    }
     return post;
   },
   createComment(parent, args, { db, pubsub }, info) {
