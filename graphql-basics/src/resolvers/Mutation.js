@@ -21,7 +21,9 @@ const Mutation = {
     };
     db.posts.unshift(post);
     if (args.data.published) {
-      pubsub.publish('post', { post })
+      pubsub.publish('post', {
+        post: { mutation: 'CREATED', data: post }
+      })
     }
     return post;
   },
@@ -38,7 +40,9 @@ const Mutation = {
       ...args.data,
     };
     db.comments.push(comment);
-    pubsub.publish(`comments-${args.data.post}`, { comment })
+    pubsub.publish(`comments-${args.data.post}`,{
+      comment: { mutation: 'CREATED', data: comment }
+    })
     return comment;
   },
   updateUser(parent, args, { db }, info) {
@@ -57,22 +61,52 @@ const Mutation = {
 
     return user
   },
-  updatePost(parent, args, { db }, info) {
+  updatePost(parent, args, { db, pubsub }, info) {
     const post = db.posts.find(post => post.id === args.id)
     if(!post) throw new Error('error.post.not-found')
-
+    const ogPost = { ...post }
     if(typeof args.data.title === 'string') post.title = args.data.title
     if(typeof args.data.body === 'string') post.body = args.data.body
     if(typeof args.data.published === 'boolean') post.published = args.data.published
+    if (ogPost.published && !post.published) {
+      pubsub.publish('post', {
+        post: {
+          mutation: 'DELETED',
+          data: ogPost
+        }
+      })
+    } else if (!ogPost.published && post.published){
+      pubsub.publish('post', {
+        post: {
+          mutation: 'CREATED',
+          data: post
+        }
+      })
+    } else if (post.published){
+      console.log({
+        ogPost,
+        post
+      })
+      pubsub.publish('post', {
+        post: {
+          mutation: 'UPDATED',
+          data: post
+        }
+      }) 
+    }
     
     return post
   },
-  updateComment(parent, args, { db}, info) {
+  updateComment(parent, args, { db, pubsub }, info) {
     const comment = db.comments.find(comment => comment.id === args.id)
     if(!comment) throw new Error('error.comment.not-found')
 
     if(typeof args.data.text === 'string') comment.text = args.data.text
+    pubsub.publish(`comments-${comment.post}`,{
+      comment: { mutation: 'UPDATED', data: comment }
+    })
 
+    console.log(args.id)
     return comment
   },
   deleteUser(parent, args, { db }, info) {
@@ -91,21 +125,34 @@ const Mutation = {
     db.comments = db.comments.filter((comment) => comment.author !== args.id);
     return deletedUser[0];
   },
-  deletePost(parent, args, { db }, info) {
+  deletePost(parent, args, { db, pubsub }, info) {
     const postIndex = db.posts.findIndex((post) => post.id === args.id);
     if (postIndex === -1) throw new Error("error.post.not-found");
-    const deletedPost = db.posts.splice(postIndex, 1);
+
+    const [ post ] = db.posts.splice(postIndex, 1);
     db.comments = db.comments.filter((comment) => comment.post !== args.id);
-    return deletedPost[0];
+
+    if (post.published) {
+      pubsub.publish('post', {
+        post: {
+          mutation: 'DELETED',
+          data: post
+        }
+      })
+    }
+    return post
   },
-  deleteComment(parent, args, { db }, info) {
+  deleteComment(parent, args, { db, pubsub }, info) {
     const commentIndex = db.comments.findIndex(
       (comment) => comment.id === args.id
     );
     if (commentIndex === -1) throw new Error("error.comment.not-found");
 
-    const deletedComment = db.comments.splice(commentIndex, 1);
-    return deletedComment[0];
+    const [ comment ] = db.comments.splice(commentIndex, 1);
+    pubsub.publish(`comments-${comment.post}`,{
+      comment: { mutation: 'DELETED', data: comment }
+    })
+    return comment;
   },
 };
 
