@@ -10,6 +10,7 @@ const prisma = new Prisma({
 //     console.log(JSON.stringify(data, undefined, 2))
 // }).catch(e => console.log(e))
 
+// get all comments 
 prisma.query.comments(null, `{
     id
     text
