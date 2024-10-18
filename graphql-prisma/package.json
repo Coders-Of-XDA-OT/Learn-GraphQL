@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "graphql-cli": "^3.0.14",
-    "graphql-yoga": "^1.18.3",
+    "graphql-yoga": "^5.7.0",
     "prisma-binding": "^2.3.16",
     "uuid": "^7.0.3"
   },
